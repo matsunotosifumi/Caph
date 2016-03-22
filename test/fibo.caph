@@ -22,7 +22,3 @@ t = true
 f = false
 
 cout << t && !f
-
-cin >> d
-
-cout << d

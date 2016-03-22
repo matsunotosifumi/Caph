@@ -104,7 +104,7 @@ public class Evaluator extends CalcVisitor {
 		
 		record.clear();
 		
-		
+		//新環境の構築
 		record_ref = false;
 		
 		record.put(String.class.cast(cnode.child.get(0).accept(this)), cnode);
@@ -118,13 +118,14 @@ public class Evaluator extends CalcVisitor {
 			}
 		}
 		
-		if(cnode.child.size() == 4) cnode.child.get(3).accept(this);
+		if(cnode.child.size() == 4) cnode.child.get(3).accept(this);//Where
 		
 		record_ref = true;
+		//新環境の終了
 		
-		ret = cnode.child.get(2).accept(this);
+		ret = cnode.child.get(2).accept(this);//Return
 		
-		record = buff;
+		record = buff;//環境を元に戻す
 		return ret;
 	}
 	
