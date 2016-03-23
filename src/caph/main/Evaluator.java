@@ -107,8 +107,10 @@ public class Evaluator extends CalcVisitor {
 		//新環境の構築
 		record_ref = false;
 		
+		//関数自身を環境に追加
 		record.put(String.class.cast(cnode.child.get(0).accept(this)), cnode);
 		
+		//引数を環境に追加
 		for(int i=0;i<arg.size();i++){
 			String id = String.class.cast(arg.get(i).accept(this));
 			if(!record.containsKey(id)) record.put(id, arg2_val.get(i));
@@ -118,6 +120,7 @@ public class Evaluator extends CalcVisitor {
 			}
 		}
 		
+		//Where内の変数を追加
 		if(cnode.child.size() == 4) cnode.child.get(3).accept(this);//Where
 		
 		record_ref = true;

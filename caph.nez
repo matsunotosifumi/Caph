@@ -1,4 +1,4 @@
-source = { S*  $(decl)  ( _ ('\r\n' / '\n') _ S+ $(decl) )* #Source} .*
+source = { S*  $(decl)  ( _ ('\r\n' / '\n') _ S+ $(decl) )* #Source}
 decl = iodecl / funcdecl / vardecl
 
 //iodecl's structure
@@ -7,16 +7,16 @@ in = { 'cin' _ '>>' _ $target(name) #In}
 out = { 'cout' _ '<<' _ $target(value) #Out}
 
 //funcdecl's leftside tree
-funcdecl = { $name(name) '(' _ $arglist(arglist) _ ')' _ $returnlist(returnlist) $where(whereblock)? #Funcdecl}
+funcdecl = { $name(name) '(' _ $arglist(arglist) _ ')' _ $returnlist(returnlist) _ $where(whereblock)? _ #Funcdecl}
 name = { !keyword ([a-z] / [A-Z])+ ([0-9] / [a-z] / [A-Z] / '_')* #Name}
 arglist = {$arg(name) _ (',' _ $arg(name))* #Arglist}
 arglist2 = {$arg2(value) _ (',' _ $arg2(value))* #Arglist2}
-returnlist = { ($return(return) (('\r\n' / '\n') $return(return))* ('\r\n' / '\n'))* $othwiseret(othwiseret) #Returnlist}
-return = { _ '=' _ $retval(value) _ '[' _ $retcase(returncase) _ ']' #Return}
+returnlist = { ($return(return) ( ('\r\n' / '\n') $return(return))* ('\r\n' / '\n'))? $othwiseret(othwiseret) #Returnlist}
+return = { _ '=' _ $retval(value) _ '[' _ $retcase(returncase) _ ']' _ #Return}
 othwiseret = { _ '=' _ $retval(value) ( _ '['_ 'otherwise' _ ']' )? #OthwiseRet}
 returncase = exp {$left _ ',' _ $right(exp) #Returncase}*
 whereblock = { ('\r\n' / '\n') _ 'where' _ $declist(declist) #Where}
-declist = (vardecl / funcdecl) {$left ('\r\n' / '\n') _ $right( vardecl / funcdecl ) #Declist}*
+declist = (vardecl / funcdecl) {$left _ ('\r\n' / '\n') _ $right( vardecl / funcdecl ) #Declist}*
 
 //needless
 type = elemtype
