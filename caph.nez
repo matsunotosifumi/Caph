@@ -25,7 +25,7 @@ elemtype= {'Int' / 'Bool' #Elemtype}
 //functioncall
 funcCall = { $name(name) '(' _ $arglist(arglist2) _ ')' #FuncCall}
 
-bind = ( {'=' _ $retval(value) #monoral_bind} / {'~=' _ $retval(value) #parallel_bind} )
+bind = ( {'=' _ $retval(value) #Monoral_bind} / {'~=' _ $retval(value) #Parallel_bind} )
 
 //value
 value = exp
