@@ -2,7 +2,7 @@ fibo(n) = 0 [ n == 0 ]
         = 1 [ n == 1 ]
         = fibo(n-1) + fibo(n-2)
 
-cout << fibo(10)
+cout << fibo(31)
 
 cout << fibo(5)
 
