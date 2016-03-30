@@ -23,7 +23,6 @@ public class Main {
 				System.err.println("finish!");
 			}
 			long end = System.currentTimeMillis();
-			System.out.println((end - start)  + "ms");
 			System.err.println((end - start)  + "ms");
 		} catch (IOException e) {
 			System.exit(1);

@@ -80,6 +80,28 @@ class Vardecl extends BinaryExpr {
 	}
 }
 
+class Monoral_bind extends CalcTree {
+	public Monoral_bind(CommonTree node){
+		this.child.add(Translator.translate(node.get(0)));
+	}
+
+	@Override
+	public Object accept(CalcVisitor visitor) {
+		return visitor.visit(this);
+	}
+}
+
+class Parallel_bind extends CalcTree {
+	public Parallel_bind(CommonTree node){
+		this.child.add(Translator.translate(node.get(0)));
+	}
+
+	@Override
+	public Object accept(CalcVisitor visitor) {
+		return visitor.visit(this);
+	}
+}
+
 class Add extends BinaryExpr {
 
 	public Add(CalcTree left, CalcTree right) {
@@ -257,30 +279,7 @@ class Name extends CalcTree{
 	
 }
 
-/*
-class True extends CalcTree{
-	Boolean bool;
-	public True(Boolean bool){
-		this.bool=bool;
-	}
-	@Override
-	public Object accept(CalcVisitor visitor) {
-		return visitor.visit(this);
-	}
-}
 
-class False extends CalcTree{
-	Boolean bool;
-	public False(Boolean bool) {
-		this.bool= bool;
-	}
-	@Override
-	public Object accept(CalcVisitor visitor) {
-		return visitor.visit(this);
-	}
-	
-}
-*/
 class Bool extends CalcTree{
 	Boolean bool;
 	public Bool(Boolean bool){
@@ -343,20 +342,26 @@ class OthwiseRet extends CalcTree{
 	}
 }
 
-class Returncase extends BinaryExpr{
-	public Returncase(CalcTree left, CalcTree right){
-		super(left,right);
+class Returncase extends CalcTree{
+	public Returncase(CommonTree node){
+		super();
+		for (int i = 0; i < node.size(); i++) {
+		this.child.add(Translator.translate(node.get(i)));
+		}
 	}
-
 	@Override
 	public Object accept(CalcVisitor visitor) {
 		return visitor.visit(this);
 	}
 }
 
+
 class Where extends CalcTree{
-	public Where(CalcTree ret){
-		this.child.add(ret);
+	public Where(CommonTree node){
+		super();
+		for (int i = 0; i < node.size(); i++) {
+		this.child.add(Translator.translate(node.get(i)));
+		}
 	}
 	@Override
 	public Object accept(CalcVisitor visitor) {
@@ -405,3 +410,37 @@ class Not extends CalcTree{
 		return visitor.visit(this);
 	}
 }
+
+class Lambda extends CalcTree{
+	public Lambda(CalcTree first, CalcTree second, CalcTree third){
+		this.child.add(first);
+		this.child.add(second);
+		this.child.add(third);
+	}
+	@Override
+	public Object accept(CalcVisitor visitor) {
+		return visitor.visit(this);
+	}
+}
+
+/*
+class Monoral_lambda extends CalcTree{
+	public Monoral_lambda(CalcTree ret){
+		this.child.add(ret);
+	}
+	@Override
+	public Object accept(CalcVisitor visitor) {
+		return visitor.visit(this);
+	}
+}
+
+class Parallel_lambda extends CalcTree{
+	public Parallel_lambda(CalcTree ret){
+		this.child.add(ret);
+	}
+	@Override
+	public Object accept(CalcVisitor visitor) {
+		return visitor.visit(this);
+	}
+}
+*/

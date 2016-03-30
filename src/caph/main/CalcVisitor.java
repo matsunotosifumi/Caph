@@ -24,6 +24,10 @@ public abstract class CalcVisitor {
 
 	public abstract Object visit(Vardecl node);
 	
+	public abstract Object visit(Monoral_bind node);
+	
+	public abstract Object visit(Parallel_bind node);
+	
 	public abstract Object visit(In node);
 
 	public abstract Object visit(Out node);
@@ -48,8 +52,6 @@ public abstract class CalcVisitor {
 
 	public abstract Object visit(Declist node);
 
-	//public abstract Object visit(Elemtype node);//型推論するからいらないのでは?
-
 	public abstract Object visit(FuncCall node);
 
 	public abstract Object visit(And node);
@@ -60,10 +62,12 @@ public abstract class CalcVisitor {
 
 	public abstract Object visit(Not node);
 
-	//public abstract Object visit(Nil node);//wrong型
-	//とりあえず、実装していない
-	
-	//public abstract Object visit(False node);
-	//public abstract Object visit(True node);
 	public abstract Object visit(Bool node);//trueとfalseを統合
+	
+	//Lambda expression
+	public abstract Object visit(Lambda node);
+	
+	//public abstract Object visit(Monoral_lambda node);
+	
+	//public abstract Object visit(Parallel_lambda node);
 }
