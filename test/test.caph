@@ -10,15 +10,15 @@ cout << fibo(7)
 
 cout << fibo(6)
 
-gg = 1
+yy = hh + gg
 
-yy = 2
+hh = 1
 
-hh ~= (gg + 1) + yy
+gg = 2
 
-cout << hh
+cout << yy
 
-hoge(a, b, c) ~= ((\x y ~> x + y)a b) + c [ a < 5 ]
+hoge(a, b, c) ~= ((\x y -> x + x + x + y)a b) + c [ a < 5 ]
                = a * b + c                [ b < 5 ]
               ~= a + b * c                [ c < 5 ]
                = piyo(a,b,c) - huga       [ otherwise ]

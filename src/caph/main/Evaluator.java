@@ -1,7 +1,11 @@
 package caph.main;
 
-import java.util.*;
-import java.util.concurrent.Callable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 public class Evaluator extends CalcVisitor {
 
@@ -29,13 +33,14 @@ public class Evaluator extends CalcVisitor {
 	public Object visit(Funcdecl node) {
 		record_ref = false;
 		String id = String.class.cast(node.child.get(0).accept(this));
-		
+
 		if (!record.containsKey(id)) {
 			CalcTree returnListNode = node.child.get(2);
 			for (int i = 0; i < returnListNode.child.size(); i++) {
 				CalcTree returnNode = returnListNode.child.get(i);
 				if (returnNode.child.get(0) instanceof Parallel_bind) {
 					//System.out.println("line38" + returnNode.child.get(0).accept(this));//test
+					System.err.println(id+(i+1)+"行目の木構造");
 					CalcTree newTree = CalcTree.class.cast(returnNode.child.get(0).accept(this));// **
 					returnNode.child.set(0, newTree);
 					returnListNode.child.set(i, returnNode);
@@ -44,25 +49,28 @@ public class Evaluator extends CalcVisitor {
 			//************
 			if (node.child.size() == 4) {
 				CalcTree whereNode = node.child.get(3);
-				for (int i = 0; i < whereNode.child.size(); i++) {
-					CalcTree declNode = whereNode.child.get(i);
+				CalcTree declistNode = whereNode.child.get(0);
+				for (int i = 0; i < declistNode.child.size(); i++) {
+					CalcTree declNode = declistNode.child.get(i);
 					if (declNode.child.get(1) instanceof Parallel_bind) {
+						System.err.println(id+" where"+(i+1)+"行目の木構造");
 						CalcTree newTree = CalcTree.class.cast(declNode.child
 								.get(1).accept(this));// **
 						declNode.child.set(1, newTree);
-						whereNode.child.set(i, declNode);
+						declistNode.child.set(i, declNode);
+						whereNode.child.set(0,declistNode);
 						}
 				}
 				node.child.set(3, whereNode);
 			}
 			//************
 			node.child.set(2, returnListNode);
-			
+
 			if(record.put(id, node) != null){
 				System.err.println("you can't do destructive assignment 61" + id);
 				System.exit(-1);
 			}
-			
+
 		} else if(fcFlag){
 			record_ref = true;
 			return node;
@@ -116,7 +124,7 @@ public class Evaluator extends CalcVisitor {
 	public Object visit(Returncase node) {
 		Boolean buff = true;
 		for (int i = 0; i < node.child.size(); i++) {
-			buff &= Boolean.class.cast(node.child.get(i).accept(this)); 
+			buff &= Boolean.class.cast(node.child.get(i).accept(this));
 		}
 		return buff;
 	}
@@ -165,7 +173,7 @@ public class Evaluator extends CalcVisitor {
 				System.exit(-1);
 			}
 			record_ref = false;
-			
+
 		}
 
 		record = buff2;
@@ -262,7 +270,7 @@ public class Evaluator extends CalcVisitor {
 					LinkedList<String> key2 = new LinkedList<String>();
 					key1.add(String.class.cast(left));
 					map.put(key1, 1);
-					
+
 					key2.add(String.class.cast(right));
 					map.merge(key2, 1, (x, y) -> x + y);
 					return map;
@@ -283,9 +291,9 @@ public class Evaluator extends CalcVisitor {
 
 	@Override
 	public Object visit(Mul node) {
-		Object left = Object.class.cast(node.child.get(0).accept(this));
-		Object right = Object.class.cast(node.child.get(1).accept(this));
-		
+		Object left = node.child.get(0).accept(this);
+		Object right = node.child.get(1).accept(this);
+
 		//System.out.println("line287 " + paraFlag);//test
 		if (paraFlag) {
 			if (left instanceof Integer) {
@@ -478,13 +486,16 @@ public class Evaluator extends CalcVisitor {
 		record_ref = false;
 		String id = String.class.cast(node.child.get(0).accept(this));
 		record_ref = true;
+		if(node.child.get(1) instanceof Parallel_bind){
+			System.err.println(id+"の木構造");
+		}
 		Object val = node.child.get(1).accept(this);
-		
+
 		if(record.put(id, val) != null){
 			System.err.println("you can't do destructive assignment 477");
 			System.exit(-1);
 		}
-		
+
 		return null;
 	}
 
@@ -519,7 +530,7 @@ public class Evaluator extends CalcVisitor {
 	public Object visit(Out node) {
 		fcFlag = true;
 		Object output = node.child.get(0).accept(this);
-		System.out.println(output);
+		System.out.println("result = " +output+"\n");
 		fcFlag = false;
 		return null;
 	}
@@ -567,12 +578,13 @@ public class Evaluator extends CalcVisitor {
 		//System.out.println("line564 " + nodeZero);//test
 		if (nodeZero instanceof Integer) {
 			paraFlag = false;
+			System.err.println(nodeZero);
 			return Integer.class.cast(nodeZero);
 		} else {
 			//System.out.println("line570 " + nodeZero);//test
 			HashMap<LinkedList<String>, Integer> expressionData = (HashMap<LinkedList<String>, Integer>) nodeZero;
 			LinkedList<CalcTree> tree2add = new LinkedList<CalcTree>();
-			//System.out.println(expressionData);//test
+			System.err.println(expressionData);//test
 			for (LinkedList<String> key : expressionData.keySet()) {
 				if (key.size() == 1) {
 					if (String.class.cast(key.get(0)).equals("*")) {
@@ -633,33 +645,33 @@ public class Evaluator extends CalcVisitor {
 			}
 		}
 	}
-	
-	
+
+
 	@Override
 	public Object visit(Lambda node) {
 		Boolean fcFlag_buff = new Boolean(fcFlag);
 		Boolean paraFlag_buff = new Boolean(paraFlag);
 		//System.out.println("line638 " + paraFlag);//test
-		
+
 		//System.out.println("636record " + record);//test
-		
+
 		HashMap<String, Object> buff = new HashMap<String, Object>(record);
 		@SuppressWarnings("unchecked")
 		List<CalcTree> arg2 = (List<CalcTree>) node.child.get(2).child;
 		@SuppressWarnings("unchecked")
 		List<CalcTree> arg = (List<CalcTree>) node.child.get(0).child;
 		Object ret;
-		
+
 		fcFlag = false;
 		record_ref = false;
-		
+
 		//Collection<Callable<Object>> processes = new LinkedList<Callable<Object>>();
-		
-		
+
+		if (node.child.get(1) instanceof Parallel_bind) System.err.println("λ式の木構造");
 		CalcTree newTree = CalcTree.class.cast(node.child.get(1).accept(this));
 		node.child.get(1).child.set(0, newTree);
 		//node.child.set(1, newTree);
-		
+
 		// 引数を環境に追加
 		for (int i = 0; i < arg.size(); i++) {
 		String id = String.class.cast(arg.get(i).accept(this));
@@ -669,12 +681,12 @@ public class Evaluator extends CalcVisitor {
 				System.err.println("you can't do destructive assignment 144");
 				System.exit(-1);
 			}
-			record_ref = false;	 
+			record_ref = false;
 		}
-		
+
 		record_ref = true;
 		fcFlag = true;
-		
+
 		paraFlag = new Boolean(paraFlag_buff);
 		//System.out.println("line679 " + paraFlag);//test
 		ret = newTree.accept(this);
